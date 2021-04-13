@@ -65,6 +65,7 @@ final class MonthCell: KVKCollectionViewCell {
     var style = Style() {
         didSet {
             monthStyle = style.month
+            dateLabel.font = monthStyle.fontNameDate
             allDayStyle = style.allDay
         }
     }
@@ -179,7 +180,6 @@ final class MonthCell: KVKCollectionViewCell {
                 if let tempDate = day.date, monthStyle.showDatesForOtherMonths {
                     dateLabel.text = "\(tempDate.day)"
                     dateLabel.textColor = monthStyle.colorNameEmptyDay
-                    dateLabel.font = monthStyle.fontNameDate
                 } else {
                     dateLabel.text = nil
                 }
