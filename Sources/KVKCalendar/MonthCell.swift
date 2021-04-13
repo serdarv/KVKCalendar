@@ -15,7 +15,6 @@ final class MonthCell: UICollectionViewCell {
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.tag = -1
-        label.font = monthStyle.fontNameDate
         label.textAlignment = .center
         label.clipsToBounds = true
         return label
@@ -54,6 +53,7 @@ final class MonthCell: UICollectionViewCell {
     var style = Style() {
         didSet {
             monthStyle = style.month
+            dateLabel.font = monthStyle.fontNameDate
             allDayStyle = style.allDay
         }
     }
@@ -160,7 +160,6 @@ final class MonthCell: UICollectionViewCell {
                 if let tempDate = day.date, monthStyle.showDatesForOtherMonths {
                     dateLabel.text = "\(tempDate.day)"
                     dateLabel.textColor = monthStyle.colorNameEmptyDay
-                    dateLabel.font = monthStyle.fontNameDate
                 } else {
                     dateLabel.text = nil
                 }
