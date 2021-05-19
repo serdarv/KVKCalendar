@@ -21,6 +21,7 @@ final class ScrollDayHeaderView: UIView {
         var date: Date
         let type: CalendarType
         var style: Style
+        var isClickEnabled: Bool = true
     }
     
     private var params: Parameters
@@ -29,7 +30,7 @@ final class ScrollDayHeaderView: UIView {
     private var lastContentOffset: CGFloat = 0
     private var trackingTranslation: CGFloat?
     private var subviewCustomHeader: UIView?
-    
+
     private var style: Style {
         get {
             return params.style
@@ -56,6 +57,15 @@ final class ScrollDayHeaderView: UIView {
             params.date = newValue
         }
     }
+
+    var isClickEnabled: Bool {
+        get {
+            return params.isClickEnabled
+        }
+        set {
+            params.isClickEnabled = newValue
+        }
+    }
     
     weak var dataSource: DisplayDataSource?
     
@@ -66,7 +76,7 @@ final class ScrollDayHeaderView: UIView {
         label.font = style.headerScroll.titleDateFont
         return label
     }()
-        
+
     private let layout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 0
@@ -93,9 +103,9 @@ final class ScrollDayHeaderView: UIView {
     func scrollHeaderByTransform(_ transform: CGAffineTransform) {
         guard !transform.isIdentity else {
             guard let scrollDate = getScrollDate(date),
-                let idx = days.firstIndex(where: { $0.date?.year == scrollDate.year
-                    && $0.date?.month == scrollDate.month
-                    && $0.date?.day == scrollDate.day }) else { return }
+                  let idx = days.firstIndex(where: { $0.date?.year == scrollDate.year
+                                                && $0.date?.month == scrollDate.month
+                                                && $0.date?.day == scrollDate.day }) else { return }
 
             collectionView.scrollToItem(at: IndexPath(row: idx, section: 0),
                                         at: .left,
@@ -210,7 +220,7 @@ final class ScrollDayHeaderView: UIView {
             setDateToTitle(date)
         }
     }
-        
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -312,9 +322,9 @@ extension ScrollDayHeaderView: CalendarSettingProtocol {
         addSubview(collectionView)
         
         guard let scrollDate = getScrollDate(date),
-            let idx = days.firstIndex(where: { $0.date?.year == scrollDate.year
-                && $0.date?.month == scrollDate.month
-                && $0.date?.day == scrollDate.day }) else { return }
+              let idx = days.firstIndex(where: { $0.date?.year == scrollDate.year
+                                            && $0.date?.month == scrollDate.month
+                                            && $0.date?.day == scrollDate.day }) else { return }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.collectionView.scrollToItem(at: IndexPath(row: idx, section: 0), at: .left, animated: false)
@@ -403,23 +413,25 @@ extension ScrollDayHeaderView: UICollectionViewDelegate, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch type {
-        case .day:
-            guard date != days[indexPath.row].date, let dateNew = days[indexPath.row].date else { return }
-            
-            date = dateNew
-            selectDate(date, type: .day)
-        case .week:
-            guard let dateNew = days[indexPath.row].date else { return }
-            
-            date = dateNew
-            selectDate(date, type: style.week.selectCalendarType)
-        default:
-            break
+        if isClickEnabled {
+            switch type {
+            case .day:
+                guard date != days[indexPath.row].date, let dateNew = days[indexPath.row].date else { return }
+
+                date = dateNew
+                selectDate(date, type: .day)
+            case .week:
+                guard let dateNew = days[indexPath.row].date else { return }
+
+                date = dateNew
+                selectDate(date, type: style.week.selectCalendarType)
+            default:
+                break
+            }
+
+            didSelectDate?(date, type)
+            collectionView.reloadData()
         }
-        
-        didSelectDate?(date, type)
-        collectionView.reloadData()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

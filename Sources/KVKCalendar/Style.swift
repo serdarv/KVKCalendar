@@ -220,6 +220,7 @@ public struct WeekStyle {
     public var colorWeekdayBackground: UIColor = .clear
     public var selectCalendarType: CalendarType = .day
     public var showVerticalDayDivider: Bool = true
+    public var isHeaderClickEnabled: Bool = true
 }
 
 // MARK: Month style
@@ -727,6 +728,7 @@ extension WeekStyle: Equatable {
             && compare(\.colorWeekdayBackground)
             && compare(\.selectCalendarType)
             && compare(\.showVerticalDayDivider)
+            && compare(\.isHeaderClickEnabled)
     }
     
 }

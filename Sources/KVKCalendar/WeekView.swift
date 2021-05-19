@@ -29,6 +29,7 @@ final class WeekView: UIView {
                                                          date: data.date,
                                                          type: .week,
                                                          style: style))
+        view.isClickEnabled = style.week.isHeaderClickEnabled
         view.didSelectDate = { [weak self] (date, type) in
             self?.didSelectDateScrollHeader(date, type: type)
         }
