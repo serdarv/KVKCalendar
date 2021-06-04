@@ -26,7 +26,16 @@ class DayCell: UICollectionViewCell {
         label.clipsToBounds = true
         return label
     }()
-    
+
+    var isClickEnabled: Bool = true {
+        didSet {
+            if !isClickEnabled {
+                dotView.backgroundColor = .clear
+                dateLabel.textColor = style.headerScroll.colorDate
+            }
+        }
+    }
+
     override var isHighlighted: Bool {
         didSet {
             guard style.headerScroll.isAnimateSelection else { return }
@@ -95,8 +104,13 @@ class DayCell: UICollectionViewCell {
                 }
                 // mark the selected date, which is not the same as the current one
                 if day.date?.month == selectDate.month, day.date?.day == selectDate.day, selectDate.day != nowDate.day {
-                    dateLabel.textColor = style.headerScroll.colorSelectDate
-                    dotView.backgroundColor = style.headerScroll.colorBackgroundSelectDate
+                    if isClickEnabled == false {
+                        dotView.backgroundColor = .clear
+                        dateLabel.textColor = style.headerScroll.colorDate
+                    } else {
+                        dateLabel.textColor = style.headerScroll.colorSelectDate
+                        dotView.backgroundColor = style.headerScroll.colorBackgroundSelectDate
+                    }
                     isSelected = true
                 }
                 return
@@ -107,8 +121,13 @@ class DayCell: UICollectionViewCell {
                 return
             }
             
-            dateLabel.textColor = style.headerScroll.colorSelectDate
-            dotView.backgroundColor = style.headerScroll.colorBackgroundSelectDate
+            if isClickEnabled == false {
+                dotView.backgroundColor = .clear
+                dateLabel.textColor = style.headerScroll.colorDate
+            } else {
+                dateLabel.textColor = style.headerScroll.colorSelectDate
+                dotView.backgroundColor = style.headerScroll.colorBackgroundSelectDate
+            }
             isSelected = true
         }
     }
@@ -140,8 +159,13 @@ class DayCell: UICollectionViewCell {
     private func populateDay(date: Date?, colorText: UIColor) {
         let nowDate = Date()
         if date?.month == nowDate.month, date?.day == nowDate.day, date?.year == nowDate.year {
-            dateLabel.textColor = UIScreen.isDarkMode ? style.headerScroll.colorCurrentSelectDateForDarkStyle : style.headerScroll.colorCurrentDate
-            dotView.backgroundColor = style.headerScroll.colorBackgroundCurrentDate
+            if isClickEnabled == false {
+                dateLabel.textColor = style.headerScroll.colorDate
+                dotView.backgroundColor = .clear
+            } else {
+                dateLabel.textColor = UIScreen.isDarkMode ? style.headerScroll.colorCurrentSelectDateForDarkStyle : style.headerScroll.colorCurrentDate
+                dotView.backgroundColor = style.headerScroll.colorBackgroundCurrentDate
+            }
         } else {
             dateLabel.textColor = colorText
             dotView.backgroundColor = .clear

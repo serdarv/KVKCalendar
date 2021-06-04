@@ -364,12 +364,14 @@ extension ScrollDayHeaderView: UICollectionViewDataSource {
                 return collectionView.kvkDequeueCell(indexPath: indexPath) { (cell: DayPhoneCell) in
                     cell.phoneStyle = style
                     cell.day = day
+                    cell.isClickEnabled = isClickEnabled
                     cell.selectDate = date
                 }
             default:
                 return collectionView.kvkDequeueCell(indexPath: indexPath) { (cell: DayPadCell) in
                     cell.padStyle = style
                     cell.day = day
+                    cell.isClickEnabled = isClickEnabled
                     cell.selectDate = date
                 }
             }
