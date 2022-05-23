@@ -92,11 +92,19 @@ struct CalendarData {
     func addStartEmptyDays(_ days: [Day], startDay: StartDayType) -> [Day] {
         var tempDays = [Day]()
         if let firstDay = days.first {
-            var endIdx = (firstDay.date?.weekday ?? 1) - 1
-            if startDay == .monday && firstDay.date?.isSunday == false {
+            var endIdx = (firstDay.date?.weekday ?? 1)
+
+            switch startDay {
+            case .monday:
+                if firstDay.date?.isSunday == true {
+                    endIdx = 7 - endIdx
+                } else {
+                    endIdx -= 2
+                }
+            case .sunday:
                 endIdx -= 1
             }
-            
+
             tempDays = Array(0..<endIdx).reversed().compactMap({ (idx) -> Day in
                 var day = Day.empty()
                 day.date = getOffsetDate(offset: -(idx + 1), to: firstDay.date)
@@ -105,7 +113,7 @@ struct CalendarData {
         } else {
             tempDays = days
         }
-        
+
         return tempDays
     }
     
